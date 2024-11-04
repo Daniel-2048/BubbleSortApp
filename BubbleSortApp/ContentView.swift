@@ -11,7 +11,7 @@ import SwiftUI
 struct ContentView: View {
     //Declare a bindable variable
     @State private var reverseCondition = false
-    @State private var inputString: String = "64,256,523,5,28,25,6,234"
+    @State private var inputString: String = ""
     @State private var stringArray: [String] = []
     @State private var floatArray: [Float] = []
     @State private var sortedArray: [[Float]] = []
