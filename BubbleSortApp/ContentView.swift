@@ -11,10 +11,10 @@ import SwiftUI
 struct ContentView: View {
     //Declare a bindable variable
     @State private var reverseCondition = false
-    @State private var inputString: String = ""
+    @State private var inputString: String = "64,256,523,5,28,25,6,234"
     @State private var stringArray: [String] = []
-    @State private var sortedArray: [[Float]] = []
     @State private var floatArray: [Float] = []
+    @State private var sortedArray: [[Float]] = []
     
     var body: some View {
         VStack {
@@ -43,18 +43,19 @@ private extension ContentView {
                 //[$0} means any element
                 //[.trimmingCharacter(in:)] is a function removing both ends of receivers
                     .map{ $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                //Turn the all the terms in the array to a [Float]
                 floatArray = stringArray.compactMap({ Float($0) })
                 sortedArray = bubbleSort(&floatArray, reverse: reverseCondition)
                 
             }) {
-                Text("Convert")
+                Text("Start")
                     .padding()
                     .foregroundStyle(Color(.systemGray6))
                     .background(Color.accentColor)
                     .styled()
             }
         }
-        .padding()
+        .padding(20)
     }
     
     var titleArea: some View {
@@ -74,10 +75,11 @@ private extension ContentView {
     }
     
     var listView: some View {
-        List(sortedArray, id: \.self) { step in
-            Text(step.map { String(format: "%.f", $0) }.joined(separator: ", "))
+        List(sortedArray, id: \.self) { eachStep in
+            Text(eachStep.map { String(format: "%.f", $0) }.joined(separator: ", "))
+                .listRowBackground(Color(.systemGray6))
         }
-        .padding()
+        .scrollContentBackground(.hidden)
     }
 }
 
@@ -94,9 +96,19 @@ struct StyledModifier: ViewModifier {
     }
 }
 
+//apply the [ViewModifier] into the [func]
+extension View {
+    func styled() -> some View {
+        self.modifier(StyledModifier())
+    }
+}
+
+//MARK: - private func
 private extension ContentView {
+    //Define output
     func bubbleSort(_ array: inout [Float], reverse: Bool = false) -> [[Float]] {
         var array = array
+        //Define an Array contains Array
         var steps: [[Float]] = []
         let number = array.count
         
@@ -110,18 +122,12 @@ private extension ContentView {
                     array.swapAt(j, j+1)
                 }
             }
+            //Use [.append] to add array into [steps]
             steps.append(array)
         }
         return steps
     }
     
-}
-
-//apply the [ViewModifier] into the [func]
-extension View {
-    func styled() -> some View {
-        self.modifier(StyledModifier())
-    }
 }
 
 #Preview {
